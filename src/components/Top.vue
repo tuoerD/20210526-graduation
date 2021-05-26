@@ -180,54 +180,100 @@ export default {
     }
   },
   methods: {
-    createOrder(){
+    createOrder() {
       //先创建订单
       this.$axios
-          .post(
-            "demo/orders/createOrder",
-            this.$qs.stringify({ userId:this.$getSessionStorage("user").userId,itemNumber:this.conOrder_List.length,totalAmount:this.totalPay  })
-          )
-          .then((res) => {
-            let neworder=res.data
-            this.$setSessionStorage("neworder",neworder);
-            console.log(this.$getSessionStorage("neworder"));
-            // console.log(this.conOrder_List);
-            this.createOrderItems();
+        .post(
+          "demo/orders/createOrder",
+          this.$qs.stringify({
+            userId: this.$getSessionStorage("user").userId,
+            itemNumber: this.conOrder_List.length,
+            totalAmount: this.totalPay,
           })
-          .catch((e) => {
-            this.$message.error("服务器内部发生异常");
-            console.log(e);
-          });
+        )
+        .then((res) => {
+          let neworder = res.data;
+          this.$setSessionStorage("neworder", neworder);
+          this.createOrderItems();
+        })
+        .catch((e) => {
+          this.$message.error("服务器内部发生异常");
+          console.log(e);
+        });
     },
-    createOrderItems(){
+    createOrderItems() {
+      // alert("333")
       //创建订单项(遍历)
+      console.log(this.conOrder_List);
       this.conOrder_List.forEach((item, index, array) => {
-        
         this.$axios
           .post(
             "demo/orderitem/createOrderItems",
-            this.$qs.stringify({ orderId: this.$getSessionStorage("neworder").orderId,productId:item.productId,nowPrice:item.nowPrice,productCount:item.quantity })
+            this.$qs.stringify({
+              orderId: this.$getSessionStorage("neworder").orderId,
+              productId: item.productId,
+              nowPrice: item.nowPrice,
+              productCount: item.quantity,
+            })
           )
           .then((res) => {
-            if(res.data<0)
-            {
+            if (res.data < 0) {
               this.$message.error("创建订单项失败！");
-            }else{
-              console.log(this.$getSessionStorage("neworder").orderId);
+            } else {
+              //化妆品销量库存变化
+              this.$axios
+                .post(
+                  "demo/product/updatePro",
+                  this.$qs.stringify({
+                    productId:item.productId,
+                    num:item.quantity
+                  })
+                )
+                .then((res) => {
+                  // alert("222")
+                  if (res.data < 0) {
+                    this.$message.error("出现异常！");
+                  }
+                })
+                .catch((e) => {
+                  this.$message.error("服务器异常！");
+                  console.log(e);
+                });
+              // location.reload();
             }
           })
           .catch((e) => {
             this.$message.error("创建订单项发生异常");
             console.log(e);
-          });});
+          });
+      });
     },
-    submitOrder(){
+    updatePro() {
+      this.$axios
+        .post(
+          "demo/product/updatePro",
+          this.$qs.stringify({
+            productId: item.productId,
+          })
+        )
+        .then((res) => {
+          if (res.data < 0) {
+            this.$message.error("出现异常！");
+          }
+        })
+        .catch((e) => {
+          this.$message.error("服务器异常！");
+          console.log(e);
+        });
+    },
+    submitOrder() {
       this.createOrder();
       // this.createOrderItems();
-      this.dialogFormVisible=false;
+      this.dialogFormVisible = false;
       // this.conOrder_List = [];
       // this.totalPay = 0;
       this.dels();
+      // location.reload();
     },
     cancelOrder() {
       // console.log("ww");
@@ -300,7 +346,7 @@ export default {
             this.$message.error("服务器内部发生异常");
             console.log(e);
           });
-          // console.log(this.conOrder_List);
+        // console.log(this.conOrder_List);
       });
       this.dialogFormVisible = true;
     },

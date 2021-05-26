@@ -8,12 +8,13 @@
         sortable
         width="180"
         column-key="date"
+        align="center"
       >
       </el-table-column>
-      <el-table-column prop="productName" label="商品"> </el-table-column>
-      <el-table-column prop="storeName" label="店铺"> </el-table-column>
-      <el-table-column prop="productCount" label="数量"> </el-table-column>
-      <el-table-column prop="itemPay" label="金额"> </el-table-column>
+      <el-table-column prop="productName" label="商品" width="250" align="center"> </el-table-column>
+      <el-table-column prop="storeName" label="店铺" align="center"> </el-table-column>
+      <el-table-column prop="productCount" label="数量" align="center"> </el-table-column>
+      <el-table-column prop="itemPay" label="金额" align="center"> </el-table-column>
       <el-table-column
         prop="orderItemTag"
         label="标签"
@@ -25,6 +26,7 @@
         ]"
         :filter-method="filterTag"
         filter-placement="bottom-end"
+        align="center"
       >
       </el-table-column>
     </el-table>

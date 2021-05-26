@@ -10,13 +10,19 @@
         sortable
         width="180"
         column-key="date"
+         align="center"
       >
       </el-table-column>
-      <el-table-column prop="productName" label="商品"> </el-table-column>
-      <el-table-column prop="storeName" label="店铺"> </el-table-column>
-      <el-table-column prop="productCount" label="数量"> </el-table-column>
-      <el-table-column prop="itemPay" label="金额"> </el-table-column>
-      
+      <el-table-column prop="productName" label="商品" width="250" align="center"> </el-table-column>
+      <el-table-column prop="storeName" label="店铺" align="center"> </el-table-column>
+      <el-table-column prop="productCount" label="数量" align="center"> </el-table-column>
+      <el-table-column prop="itemPay" label="金额" align="center"> </el-table-column>
+      <el-table-column prop="orderItemId" v-if="false"> </el-table-column>
+      <el-table-column label="操作" align="center">
+        <template slot-scope="scope">
+        <el-link @click="confirmReceive(scope.row.orderItemId)">确认收货</el-link>
+        </template>
+        </el-table-column>
     </el-table>
   </div>
 </template>
@@ -33,6 +39,34 @@ export default {
     this.initWaitPay();
   },
   methods: {
+    confirmReceive(itemId){
+      this.$confirm("此操作将确认收货, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          //将该订单项的状态修改为待评价
+          // alert(itemId);
+          this.$axios
+        .post("demo/orderitem/editOrderItemTag",this.$qs.stringify({orderItemId:itemId,orderItemTag:"待评价"}))
+        .then((res) => {
+          if(res.data==1)
+          {
+            this.$message.success("收货成功");
+            // this.initWaitPay();
+            location.reload();
+          }else{
+            this.$message.error("失败");
+          }
+        })
+        .catch((e) => {
+          this.$message.error("服务器内部发生异常");
+          console.log(e);
+        });
+        })
+        // this.initWaitPay();
+    },
     initWaitPay() {
       var id = this.$getSessionStorage("user").userId;
       this.$axios

@@ -10,26 +10,39 @@
         sortable
         width="180"
         column-key="date"
+        align="center"
       >
       </el-table-column>
-      <el-table-column prop="productName" label="商品"> </el-table-column>
-      <el-table-column prop="storeName" label="店铺"> </el-table-column>
+      <el-table-column
+        prop="productName"
+        label="商品"
+        width="250"
+        align="center"
+      >
+      </el-table-column>
+      <el-table-column prop="storeName" label="店铺" align="center">
+      </el-table-column>
       <!-- <el-table-column prop="nowPrice" label="单价"> </el-table-column> -->
-      <el-table-column prop="productCount" label="数量"> </el-table-column>
-      <el-table-column prop="itemPay" label="金额"> </el-table-column>
-      <el-table-column prop="handle" label="操作"><el-link @click="toComment">去评价</el-link></el-table-column>
-      
+      <el-table-column prop="productCount" label="数量" align="center">
+      </el-table-column>
+      <el-table-column prop="itemPay" label="金额" align="center">
+      </el-table-column>
+      <el-table-column prop="handle" label="操作" align="center"
+        ><template slot-scope="scope"
+          ><el-link @click="toComment(scope.row.productName)">去评价</el-link></template
+        ></el-table-column
+      >
     </el-table>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'WaitComment',
-  data () {
+  name: "WaitComment",
+  data() {
     return {
-      tableData: []
-    }
+      tableData: [],
+    };
   },
   mounted() {
     this.initWaitPay();
@@ -53,11 +66,23 @@ export default {
           console.log(e);
         });
     },
-    toComment(){
-      
-    }
+    toComment(proName) {
+      // alert("111");
+      this.$axios
+        .post("demo/product/getProductInfoByName/"+proName,this.$qs.stringify({productName:this.proName}))
+        .then((res)=>{
+          // alert("123");
+          this.$setSessionStorage("productMessage",res.data);
+          this.$router.push({ path: "/detail" });
+          // console.log(res.data);
+        })
+        .catch((e)=>{
+          this.$message.error("服务器内部发生异常");
+          console.log(e);
+        })
+    },
   },
-}
+};
 </script>
 
 <style scoped>

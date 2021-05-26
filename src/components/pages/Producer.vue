@@ -1,5 +1,19 @@
 <template>
   <div>
+    <!-- <div style="margin-top: 15px">
+      <el-input
+        placeholder="请输入内容"
+        v-model="pro_search"
+        class="input-with-select"
+      >
+        <el-select v-model="select" slot="prepend" placeholder="请选择">
+          <el-option label="餐厅名" value="1"></el-option>
+          <el-option label="订单号" value="2"></el-option>
+          <el-option label="用户电话" value="3"></el-option>
+        </el-select>
+        <el-button slot="append" icon="el-icon-search"></el-button>
+      </el-input>
+    </div> -->
     <div class="top-place">
       <el-button
         class="new-product-btn"
@@ -97,18 +111,18 @@
         :label-position="left"
       >
         <el-form-item label="化妆品图片">
-        <div style="height: 100px;width:250px">
-          <el-upload
-            class="avatar-uploader"
-            action="http://localhost:8083/demo/product/addProPic"
-            :show-file-list="false"
-            :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload"
-          >
-            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
-        </div></el-form-item>
+          <div style="height: 100px; width: 250px">
+            <el-upload
+              class="avatar-uploader"
+              action="http://localhost:8083/demo/product/addProPic"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload"
+            >
+              <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload></div
+        ></el-form-item>
         <el-form-item label="化妆品ID">
           <el-input v-model="createForm.productId"></el-input>
         </el-form-item>
@@ -179,36 +193,37 @@
 export default {
   data() {
     return {
-      Store_List:[],
+      pro_search:"",
+      Store_List: [],
       stores: [],
-      types:[
-        {value:'水乳',label:'水乳'},
-        {value:'精华水',label:'精华水'},
-        {value:'精华液',label:'精华液'},
-        {value:'面霜',label:'面霜'},
-        {value:'眼霜',label:'眼霜'},
-        {value:'眼精华',label:'眼精华'},
-        {value:'身体乳',label:'身体乳'},
-        {value:'防晒',label:'防晒'},
-        {value:'粉底液',label:'粉底液'},
-        {value:'气垫',label:'气垫'},
-        {value:'眼影',label:'眼影'},
-        {value:'眼线笔',label:'眼线笔'},
-        {value:'睫毛膏',label:'睫毛膏'},
-        {value:'眉笔',label:'眉笔'},
-        {value:'腮红',label:'腮红'},
-        {value:'修容',label:'修容'},
-        {value:'高光',label:'高光'},
-        {value:'唇釉',label:'唇釉'},
-        {value:'唇膏',label:'唇膏'},
-        {value:'定妆喷雾',label:'定妆喷雾'},
-        {value:'散粉',label:'散粉'},
-        {value:'美妆工具',label:'美妆工具'},
+      types: [
+        { value: "水乳", label: "水乳" },
+        { value: "精华水", label: "精华水" },
+        { value: "精华液", label: "精华液" },
+        { value: "面霜", label: "面霜" },
+        { value: "眼霜", label: "眼霜" },
+        { value: "眼精华", label: "眼精华" },
+        { value: "身体乳", label: "身体乳" },
+        { value: "防晒", label: "防晒" },
+        { value: "粉底液", label: "粉底液" },
+        { value: "气垫", label: "气垫" },
+        { value: "眼影", label: "眼影" },
+        { value: "眼线笔", label: "眼线笔" },
+        { value: "睫毛膏", label: "睫毛膏" },
+        { value: "眉笔", label: "眉笔" },
+        { value: "腮红", label: "腮红" },
+        { value: "修容", label: "修容" },
+        { value: "高光", label: "高光" },
+        { value: "唇釉", label: "唇釉" },
+        { value: "唇膏", label: "唇膏" },
+        { value: "定妆喷雾", label: "定妆喷雾" },
+        { value: "散粉", label: "散粉" },
+        { value: "美妆工具", label: "美妆工具" },
       ],
       value: "",
-      chooseType:"",
+      chooseType: "",
       imageUrl: "",
-      imageBase:"",
+      imageBase: "",
       tableData: [],
       createForm: {
         productId: "",
@@ -229,15 +244,14 @@ export default {
     this.loadStoreList();
   },
   methods: {
-    loadStoreList(){
+    loadStoreList() {
       //加载店铺选项
       this.$axios
         .post("demo/store/getStoreList")
         .then((res) => {
-          this.Store_List=res.data;
+          this.Store_List = res.data;
           for (let item1 of this.Store_List) {
-            
-            this.stores.push({value: item1.storeId, label: item1.storeName});
+            this.stores.push({ value: item1.storeId, label: item1.storeName });
           }
           console.log(this.stores);
         })
@@ -248,7 +262,7 @@ export default {
     },
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw);
-      this.createForm.picture=res;
+      this.createForm.picture = res;
       // console.log(this.imageBase);
     },
     beforeAvatarUpload(file) {
@@ -288,13 +302,16 @@ export default {
       };
       this.dialogFormVisible = true;
     },
-    savePicture(){
+    savePicture() {
       // console.log(this.createForm.productId);
       //存入图片
       this.$axios
         .post(
           "demo/product/savePicture",
-          this.$qs.stringify({picture:this.imageBase,productId:this.createForm.productId})
+          this.$qs.stringify({
+            picture: this.imageBase,
+            productId: this.createForm.productId,
+          })
           // {params: {
           //   picture:this.imageBase,
           //   productId:this.createForm.productId
@@ -361,17 +378,27 @@ export default {
           console.log(e);
         });
       // this.savePicture();
-      
     },
   },
 };
 </script>
 
 <style>
+.input-search-box {
+  width: 23vw;
+  float: right;
+  display: block;
+  position: relative;
+  top: 20px;
+  /* right: 20px; */
+}
 .el-input {
   width: 250px;
   margin-right: 120px;
 }
+/* .el-inpt .el-select{
+  width: 8vw;
+} */
 .el-select {
   width: 250px;
   margin-right: 120px;

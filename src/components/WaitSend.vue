@@ -1,8 +1,6 @@
 
 <template>
   <div class="all-orders">
-    <!-- <el-button @click="resetDateFilter">清除日期过滤器</el-button>
-  <el-button @click="clearFilter">清除所有过滤器</el-button> -->
     <el-table ref="filterTable" :data="tableData" style="width: 100%">
       <el-table-column
         prop="orderDate"
@@ -10,12 +8,17 @@
         sortable
         width="180"
         column-key="date"
+        align="center"
       >
       </el-table-column>
-      <el-table-column prop="productName" label="商品"> </el-table-column>
-      <el-table-column prop="storeName" label="店铺"> </el-table-column>
-      <el-table-column prop="nowPrice" label="单价"> </el-table-column>
-      <el-table-column prop="productCount" label="数量"> </el-table-column>
+      <el-table-column prop="productName" label="商品" width="250" align="center"> </el-table-column>
+      <el-table-column prop="storeName" label="店铺" align="center"> </el-table-column>
+      <el-table-column prop="productCount" label="数量" align="center"> </el-table-column>
+      <el-table-column prop="itemPay" label="金额" align="center"> </el-table-column>
+      <el-table-column prop="orderItemId" v-if="false"> </el-table-column>
+      <!-- <el-table-column label="操作" align="center"
+        ><el-link @click="callSend">提醒发货</el-link> 
+        </el-table-column> -->
     </el-table>
   </div>
 </template>
