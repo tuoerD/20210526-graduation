@@ -14,8 +14,9 @@
       </el-table-column>
       <el-table-column prop="productName" label="商品"> </el-table-column>
       <el-table-column prop="storeName" label="店铺"> </el-table-column>
-      <el-table-column prop="nowPrice" label="单价"> </el-table-column>
+      <!-- <el-table-column prop="nowPrice" label="单价"> </el-table-column> -->
       <el-table-column prop="productCount" label="数量"> </el-table-column>
+      <el-table-column prop="itemPay" label="金额"> </el-table-column>
       <el-table-column prop="handle" label="操作"><el-link @click="toComment">去评价</el-link></el-table-column>
       
     </el-table>
@@ -43,7 +44,7 @@ export default {
         )
         .then((res) => {
           for (var i = 0; res.data[i]; i++) {
-            if (res.data[i].orderTag == "待评价") {
+            if (res.data[i].orderItemTag == "待评价") {
               this.tableData.push(res.data[i]);
             }
           }
@@ -51,9 +52,6 @@ export default {
         .catch((e) => {
           console.log(e);
         });
-    },
-    filterTag(value, row) {
-      return row.orderTag === value;
     },
     toComment(){
       

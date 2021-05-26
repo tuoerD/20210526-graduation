@@ -14,8 +14,8 @@
       </el-table-column>
       <el-table-column prop="productName" label="商品"> </el-table-column>
       <el-table-column prop="storeName" label="店铺"> </el-table-column>
-      <el-table-column prop="nowPrice" label="单价"> </el-table-column>
       <el-table-column prop="productCount" label="数量"> </el-table-column>
+      <el-table-column prop="itemPay" label="金额"> </el-table-column>
       
     </el-table>
   </div>
@@ -42,7 +42,7 @@ export default {
         )
         .then((res) => {
           for (var i = 0; res.data[i]; i++) {
-            if (res.data[i].orderTag == "待收货") {
+            if (res.data[i].orderItemTag == "待收货") {
               this.tableData.push(res.data[i]);
             }
           }
@@ -50,9 +50,6 @@ export default {
         .catch((e) => {
           console.log(e);
         });
-    },
-    filterTag(value, row) {
-      return row.orderTag === value;
     },
   },
 }

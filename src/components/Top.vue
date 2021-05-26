@@ -180,7 +180,7 @@ export default {
     }
   },
   methods: {
-    submitOrder(){
+    createOrder(){
       //先创建订单
       this.$axios
           .post(
@@ -191,32 +191,43 @@ export default {
             let neworder=res.data
             this.$setSessionStorage("neworder",neworder);
             console.log(this.$getSessionStorage("neworder"));
+            // console.log(this.conOrder_List);
+            this.createOrderItems();
           })
           .catch((e) => {
             this.$message.error("服务器内部发生异常");
             console.log(e);
           });
+    },
+    createOrderItems(){
       //创建订单项(遍历)
       this.conOrder_List.forEach((item, index, array) => {
+        
         this.$axios
           .post(
             "demo/orderitem/createOrderItems",
-            this.$qs.stringify({ orderId: this.$getSessionStorage("neworder").orderId,productId:item.productId,productCount:item.quantity })
+            this.$qs.stringify({ orderId: this.$getSessionStorage("neworder").orderId,productId:item.productId,nowPrice:item.nowPrice,productCount:item.quantity })
           )
           .then((res) => {
-            if(res.data>0)
+            if(res.data<0)
             {
-              this.dialogFormVisible=false;
-            }else{
               this.$message.error("创建订单项失败！");
+            }else{
+              console.log(this.$getSessionStorage("neworder").orderId);
             }
           })
           .catch((e) => {
             this.$message.error("创建订单项发生异常");
             console.log(e);
-          });
-      });
-      this.$message.success("提交成功！");
+          });});
+    },
+    submitOrder(){
+      this.createOrder();
+      // this.createOrderItems();
+      this.dialogFormVisible=false;
+      // this.conOrder_List = [];
+      // this.totalPay = 0;
+      this.dels();
     },
     cancelOrder() {
       // console.log("ww");
@@ -261,11 +272,12 @@ export default {
       this.multipleSelection = val;
     },
     toggleSelection(rows) {
+      this.conOrder_List = [];
+      this.totalPay = 0;
       let cartIds = [];
       this.multipleSelection.forEach((cart) => {
         cartIds.push(cart.cartId);
       });
-      // console.log(cartIds);
       if (cartIds.length == 0) {
         this.$message({
           message: "请选择",

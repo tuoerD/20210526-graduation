@@ -41,7 +41,7 @@ export default {
         )
         .then((res) => {
           for (var i = 0; res.data[i]; i++) {
-            if (res.data[i].orderTag == "待发货") {
+            if (res.data[i].orderItemTag == "待发货") {
               this.tableData.push(res.data[i]);
             }
           }
@@ -49,9 +49,6 @@ export default {
         .catch((e) => {
           console.log(e);
         });
-    },
-    filterTag(value, row) {
-      return row.orderTag === value;
     },
   },
 };

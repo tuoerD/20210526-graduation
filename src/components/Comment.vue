@@ -67,7 +67,7 @@ export default {
         .post("demo/comment/getCommentList", this.$qs.stringify({ productId: this.$getSessionStorage("productMessage").productId }))
         .then((res) => {
           this.Com_List = res.data;
-          console.log(this.Com_List);
+          // console.log(this.Com_List);
         })
         .catch((error) => {
           console.log(error);

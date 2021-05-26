@@ -6,15 +6,18 @@
         label="下单日期"
         sortable
         column-key="date"
+        width="200"
       >
       </el-table-column>
       <el-table-column prop="orderId" label="订单编号"> </el-table-column>
       <el-table-column prop="userId" label="用户ID"> </el-table-column>
-      <el-table-column prop="itemNumber" label="订单项数"> </el-table-column>
-      <el-table-column prop="totalAmount" label="订单总金额"> </el-table-column>
+      <el-table-column prop="orderItemId" label="订单项ID"> </el-table-column>
+      <el-table-column prop="productId" label="化妆品ID"> </el-table-column>
+      <el-table-column prop="productCount" label="单品数量"> </el-table-column>
+      <el-table-column prop="itemPay" label="金额"> </el-table-column>
       <!-- 筛选状态 -->
       <el-table-column
-        prop="orderTag"
+        prop="orderItemTag"
         label="订单状态"
         :filters="[
           { text: '待付款', value: '待付款' },
@@ -26,15 +29,15 @@
         filter-placement="bottom-end"
         ><template slot-scope="scope">
           <el-tag
-            :type="scope.row.orderTag === '待付款' ? 'primary' : 'success'"
+            :type="scope.row.orderItemTag === '待付款' ? 'primary' : 'success'"
             disable-transitions
-            >{{ scope.row.orderTag }}</el-tag
+            >{{ scope.row.orderItemTag }}</el-tag
           >
         </template></el-table-column
       >
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.row.orderId,scope.row.orderTag)"
+          <el-button size="mini" @click="handleEdit(scope.row.orderItemId,scope.row.orderItemTag)"
             >修改状态</el-button
           >
           <el-dialog :visible.sync="dialogFormVisible">
@@ -69,8 +72,8 @@ export default {
     return {
       tableData: [],
       editOrderForm: {
-        orderId: "",
-        orderTag: "",
+        orderItemId: "",
+        orderItemTag: "",
       },
       dialogFormVisible: false,
       options: [{
@@ -90,9 +93,10 @@ export default {
     };
   },
   methods: {
+    //获取列表
     getOrdersList() {
       this.$axios
-        .post("demo/orders/getOrdersList")
+        .post("demo/orderitem/getManageOrders")
         .then((res) => {
           this.tableData = res.data;
         })
@@ -101,22 +105,22 @@ export default {
           console.log(e);
         });
     },
+    //筛选订单项状态
     filterTag(value, row) {
-      return row.orderTag === value;
+      return row.orderItemTag === value;
     },
     handleEdit(id,tag) {
       this.dialogFormVisible = true;
-      this.editOrderForm.orderId=id;
-      this.editOrderForm.orderTag=tag;
+      this.editOrderForm.orderItemId=id;
+      this.editOrderForm.orderItemTag=tag;
     },
+    //修改订单项状态
     submitEdit(){
       this.dialogFormVisible=false;
-      this.editOrderForm.orderTag=this.value;
-      // console.log(this.editOrderForm);
+      this.editOrderForm.orderItemTag=this.value;
       this.$axios
-        .post("demo/orders/editOrderTag",this.$qs.stringify(this.editOrderForm))
+        .post("demo/orderitem/editOrderItemTag",this.$qs.stringify(this.editOrderForm))
         .then((res) => {
-          // console.log(res.data);
           if(res.data==1)
           {
             this.$message.success("修改成功");
@@ -138,9 +142,6 @@ export default {
 </script>
 
 <style scoped>
-/* .el-button {
-  float: right;
-} */
 .btn-dialog{
   margin-left: 280px;
 }
