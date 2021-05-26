@@ -24,11 +24,10 @@
             <el-table-column
               property="nowPrice"
               label="商品单价"
-              width="100"
             ></el-table-column>
-            <el-table-column property="quantity" label="数量" width="180">
+            <el-table-column property="quantity" label="数量">
             </el-table-column>
-            <el-table-column type="selection" width="50"> </el-table-column>
+            <el-table-column type="selection"> </el-table-column>
           </el-table>
           <div style="margin-top: 20px">
             <el-button @click="dels" style="float: right; margin: 0 20px"
@@ -182,7 +181,6 @@ export default {
   },
   methods: {
     submitOrder(){
-      //提交userID，produID,quantity,
       //先创建订单
       this.$axios
           .post(
@@ -198,6 +196,27 @@ export default {
             this.$message.error("服务器内部发生异常");
             console.log(e);
           });
+      //创建订单项(遍历)
+      this.conOrder_List.forEach((item, index, array) => {
+        this.$axios
+          .post(
+            "demo/orderitem/createOrderItems",
+            this.$qs.stringify({ orderId: this.$getSessionStorage("neworder").orderId,productId:item.productId,productCount:item.quantity })
+          )
+          .then((res) => {
+            if(res.data>0)
+            {
+              this.dialogFormVisible=false;
+            }else{
+              this.$message.error("创建订单项失败！");
+            }
+          })
+          .catch((e) => {
+            this.$message.error("创建订单项发生异常");
+            console.log(e);
+          });
+      });
+      this.$message.success("提交成功！");
     },
     cancelOrder() {
       // console.log("ww");
@@ -269,6 +288,7 @@ export default {
             this.$message.error("服务器内部发生异常");
             console.log(e);
           });
+          // console.log(this.conOrder_List);
       });
       this.dialogFormVisible = true;
     },
