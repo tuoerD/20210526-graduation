@@ -1,5 +1,29 @@
 <template>
   <div>
+    <div class="input-search-box">
+      <el-input
+        v-model="searchForm.searchKey"
+        size="small"
+        placeholder="输入关键字搜索"
+      >
+        <el-select
+          v-model="searchForm.selectKey"
+          slot="prepend"
+          placeholder="请选择"
+        >
+          <!-- <el-option label="所有字段" value="0"></el-option> -->
+          <el-option label="用户ID" value="0"></el-option>
+          <el-option label="订单ID" value="1"></el-option>
+          <el-option label="订单项ID" value="2"></el-option>
+          <el-option label="化妆品ID" value="3"></el-option>
+          </el-select
+        ><el-button
+          slot="append"
+          icon="el-icon-search"
+          @click="searchUser"
+        ></el-button
+      ></el-input>
+    </div>
     <el-table ref="filterTable" :data="tableData" style="width: 100%">
       <el-table-column
         prop="orderDate"
@@ -70,6 +94,10 @@
 export default {
   data() {
     return {
+      searchForm: {
+        searchKey: "",
+        selectKey: "",
+      },
       tableData: [],
       editOrderForm: {
         orderItemId: "",
@@ -133,6 +161,17 @@ export default {
           this.$message.error("服务器内部发生异常");
           console.log(e);
         });
+    },
+    searchOrders(){
+      this.$axios
+        .post("demo/orderitem/getOrderitemsListByKey", this.$qs.stringify(this.searchForm))
+        .then((res) => {
+          this.tableData = res.data;
+        })
+        //异常
+        .catch((error) => {
+          console.log(error);
+        });
     }
   },
   mounted() {
@@ -148,5 +187,12 @@ export default {
 .dialog-changeOrderTag{
   margin-bottom: 22px;
   margin-left: 200px;
+}
+.input-search-box {
+  width: 23vw;
+  float: right;
+}
+.el-select {
+  width: 8vw;
 }
 </style>

@@ -69,8 +69,7 @@ export default {
         .then((res) => {
           let user = res.data;
           if (user == null || user == "") {
-            
-            this.$message.error("用户邮箱或密码不正确");
+            this.$message.error("账户信息输入错误或者该用户已被禁用！");
             return false;
           } else {
             this.$setSessionStorage("user", user);

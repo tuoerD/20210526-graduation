@@ -1,19 +1,5 @@
 <template>
   <div>
-    <!-- <div style="margin-top: 15px">
-      <el-input
-        placeholder="请输入内容"
-        v-model="pro_search"
-        class="input-with-select"
-      >
-        <el-select v-model="select" slot="prepend" placeholder="请选择">
-          <el-option label="餐厅名" value="1"></el-option>
-          <el-option label="订单号" value="2"></el-option>
-          <el-option label="用户电话" value="3"></el-option>
-        </el-select>
-        <el-button slot="append" icon="el-icon-search"></el-button>
-      </el-input>
-    </div> -->
     <div class="top-place">
       <el-button
         class="new-product-btn"
@@ -46,7 +32,13 @@
               <span>{{ props.row.nowPrice }}</span>
             </el-form-item>
             <el-form-item label="库存">
+              <div v-if="!editInven">
               <span>{{ props.row.inventory }}</span>
+              <el-link @click="editInven=true">编辑库存</el-link></div>
+              <div v-else>
+              <input v-model="props.row.inventory" style="width:40px">
+              <el-link @click="editInventory(props.row.productId,props.row.inventory)">保存</el-link>
+              </div>
             </el-form-item>
             <el-form-item label="销量">
               <span>{{ props.row.salesVolume }}</span>
@@ -170,18 +162,6 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <!-- <div style="height: 100px">
-          <el-upload
-            class="avatar-uploader"
-            action="http://localhost:8083/demo/product/addProPic"
-            :show-file-list="false"
-            :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload"
-          >
-            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
-        </div> -->
         <el-button @click="dialogFormVisible = false">取消</el-button>
         <el-button type="primary" @click="submitCreate">提交</el-button>
       </el-form>
@@ -193,6 +173,7 @@
 export default {
   data() {
     return {
+      editInven:false,
       pro_search:"",
       Store_List: [],
       stores: [],
@@ -244,6 +225,21 @@ export default {
     this.loadStoreList();
   },
   methods: {
+    editInventory(proId,inven){
+      //修改化妆品库存
+      this.$axios
+      .post("demo/product/editInventory",this.$qs.stringify({productId:proId,inventory:inven}))
+      .then((res) => {
+        if(res.data>0){
+          // this.getProList();
+          this.editInven=false;
+        }
+      })
+      .catch((e) => {
+        this.$message.error("服务器内部发生异常");
+        console.log(e);
+      });
+    },
     loadStoreList() {
       //加载店铺选项
       this.$axios
@@ -399,7 +395,7 @@ export default {
 /* .el-inpt .el-select{
   width: 8vw;
 } */
-.el-select {
+.el-form-item .el-select {
   width: 250px;
   margin-right: 120px;
 }
@@ -409,7 +405,7 @@ export default {
   display: block;
 }
 .top-place {
-  height: 60px;
+  /* height: 60px; */
 }
 .demo-table-expand {
   font-size: 0;
@@ -425,8 +421,11 @@ export default {
 }
 .new-product-btn {
   float: right;
-  position: relative;
-  top: 20px;
-  right: 20px;
+  /* position: relative; */
+  /* top: 20px; */
+  /* right: 20px; */
 }
+/* .input-with-select{
+  width: 200px;
+} */
 </style>
